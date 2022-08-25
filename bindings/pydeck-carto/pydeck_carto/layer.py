@@ -21,6 +21,31 @@ class GeoColumType:
     QUADBIN = pdk.types.String("quadbin")
 
 
+class CartoColor(pdk.types.Function):
+    function_name = None
+
+    def __init__(self, attr: str, domain: list, colors: str):
+        if self.function_name is None:
+            raise NotImplemented('Specify the function_name of the class')
+
+        super(CartoColor, self).__init__(self.function_name,
+                                         **{'attr': attr,
+                                            'domain': domain,
+                                            'colors': colors})
+
+
+class CartoColorBins(CartoColor):
+    function_name = 'deck.carto.colorBins'
+
+
+class CartoColorCategories(CartoColor):
+    function_name = 'deck.carto.colorCategories'
+
+
+class CartoColorContinuous(CartoColor):
+    function_name = 'deck.carto.colorContinuous'
+
+
 def register_carto_layer():
     """Add CartoLayer JS bundle to pydeck"s custom libraries"""
     library_name = "CartoLayerLibrary"
