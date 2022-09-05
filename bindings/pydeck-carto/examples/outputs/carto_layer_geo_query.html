@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>pydeck</title>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~8.8.*/dist/index.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #deck-map-container {
+            width: 100%;
+            height: 100%;
+            background-color: black;
+        }
+
+        #map {
+            pointer-events: none;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: 1;
+        }
+
+        #deckgl-overlay {
+            z-index: 2;
+            background: none;
+        }
+
+        #deck-map-wrapper {
+            width: 100%;
+            height: 100%;
+        }
+
+        #deck-container {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<div id="deck-container">
+</div>
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+</body>
+<script>
+    function customOnError(e) {
+        let msg = e.message;
+        console.log(msg);
+        const knownIssues = {
+            "Failed to connect to Maps API": "Failed to fetch the Carto information<br>Please check <a target='_blank' href='https://api-docs.carto.com/'>API documentation</a>"
+        };
+        for (const key in knownIssues) {
+            console.log(key);
+            if (msg.indexOf(key) != -1) {
+                msg = knownIssues[key];
+                break;
+            }
+        }
+        new Notyf({duration: 0, position: {x: 'center', y: 'top'}}).error(msg);
+    }
+
+    function drawMap() {
+        const jsonInput = {
+            "initialViewState": {"latitude": 0, "longitude": 0, "zoom": 1},
+            "layers": [{
+                "@@type": "CartoLayer",
+                "connection": "carto_dw",
+                "credentials": {
+                    "accessToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImRVNGNZTHAwaThjYnVMNkd0LTE0diJ9.eyJodHRwOi8vYXBwLmNhcnRvLmNvbS9hY2NvdW50X2lkIjoiYWNfaGJucmVnYWYiLCJodHRwOi8vYXBwLmNhcnRvLmNvbS9hY3RpbmdfYXMiOiJnb29nbGUtb2F1dGgyfDExMDY3OTcxOTA1OTg5NzY1OTY3OCIsImlzcyI6Imh0dHBzOi8vYXV0aC5jYXJ0by5jb20vIiwic3ViIjoiYzNHY3JScVp0TkNZTnNQMkozSHhQNUpkRnB3amVhS25AY2xpZW50cyIsImF1ZCI6ImNhcnRvLWNsb3VkLW5hdGl2ZS1hcGkiLCJpYXQiOjE2NjIzNzQwMDcsImV4cCI6MTY2MjQ2MDQwNywiYXpwIjoiYzNHY3JScVp0TkNZTnNQMkozSHhQNUpkRnB3amVhS24iLCJzY29wZSI6InJlYWQ6dG9rZW5zIHdyaXRlOnRva2VucyByZWFkOmltcG9ydHMgd3JpdGU6aW1wb3J0cyByZWFkOmNvbm5lY3Rpb25zIHdyaXRlOmNvbm5lY3Rpb25zIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOlsicmVhZDp0b2tlbnMiLCJ3cml0ZTp0b2tlbnMiLCJyZWFkOmltcG9ydHMiLCJ3cml0ZTppbXBvcnRzIiwicmVhZDpjb25uZWN0aW9ucyIsIndyaXRlOmNvbm5lY3Rpb25zIl19.bjlulIrhxCHv04r7WW-1XyXeGWrJ5CZYFOBtQXVgQaezeKoxyo592KiVK4S_xpNX4wZmn6JS5yd3DMyx63Pazg1Qq7p094iFkZsmdiCmBiMCDlNcgA0NqU9FXbOPgrjkAUYBtdVxKta5_pW-kNMOqqxqLoDULVaSiuQyvTbtruqqIul4y5LXSIN0lx9u38IZNzUDv2Q4w8lwmY5W3JLMDUxoGZoQs14OkR7AQr99yrqAZ4dM2ltO_KzSQtmFX2glzUdvhJZh3qQr22rys7Rh3865-U9NGpaeSB2ton-qJreIla1PN4bJuHEH9ahOypDAY7r8TBipo34VqQvdP3rHkw",
+                    "apiBaseUrl": "https://api.carto.com",
+                    "apiVersion": "v3"
+                },
+                "data": "SELECT geom, name FROM carto-demo-data.demo_tables.airports",
+                "getFillColor": [238, 77, 90],
+                "id": "7b849fc8-e107-446f-801e-7d4dbb1e1308",
+                "pickable": true,
+                "pointRadiusMinPixels": 2.5,
+                "type": "query",
+                "onDataError": customOnError
+            }],
+            "mapProvider": "carto",
+            "mapStyle": "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
+            "views": [{"@@type": "MapView", "controller": true}]
+        };
+        const tooltip = true;
+        const customLibraries = [{
+            'libraryName': 'CartoLayerLibrary',
+            'resourceUri': 'https://cdn.jsdelivr.net/combine/npm/h3-js@~3.7.*/dist/h3-js.umd.js,npm/@deck.gl/extensions@~8.8.*/dist.min.js,npm/@deck.gl/carto@~8.8.*/dist.min.js'
+        }];
+        try {
+            deckInstance = createDeck({
+                container: document.getElementById('deck-container'),
+                jsonInput,
+                tooltip,
+                customLibraries
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    (function () {
+        drawMap();
+    })();
+</script>
+</html>

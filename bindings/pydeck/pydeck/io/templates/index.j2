@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
     {{ deckgl_jupyter_widget_bundle }}
+    {# TODO: insert it properly into a variable to be extensible #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <style>
     {{ css_text }}
     </style>
@@ -19,6 +21,24 @@
     <div id="deck-container">
     </div>
   </body>
+  {# TODO: insert it properly into some imports on the header and a cdn #}
+  <script>
+      function customOnError(e) {
+        let msg = e.message;
+        console.log(msg);
+        const knownIssues = {
+            "Failed to connect to Maps API": "Failed to fetch the Carto information<br>Please check <a target='_blank' href='https://api-docs.carto.com/'>API documentation</a>"
+        };
+        for (const key in knownIssues) {
+            console.log(key);
+            if (msg.indexOf(key) != -1) {
+                msg = knownIssues[key];
+                break;
+            }
+        }
+        new Notyf({duration: 0, position: {x: 'center', y: 'top'}}).error(msg);
+    }
+  </script>
   <script>
     const jsonInput = {{json_input}};
     const tooltip = {{tooltip}};

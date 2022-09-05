@@ -9,7 +9,8 @@ from pydeck_carto import register_carto_layer, CartoAuth
 from pydeck_carto.layer import MapType, CartoConnection
 
 register_carto_layer()
-carto_auth = CartoAuth.from_file("./carto_credentials.json")
+# carto_auth = CartoAuth.from_file("./carto_credentials.json")
+carto_auth = CartoAuth.from_file("./mock_credentials.json")
 
 layer = pdk.Layer(
     "CartoLayer",

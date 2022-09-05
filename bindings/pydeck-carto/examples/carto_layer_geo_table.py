@@ -20,6 +20,7 @@ layer = pdk.Layer(
     get_fill_color=[200, 0, 80],
     point_radius_min_pixels=2,
     pickable=True,
+    on_data_error = pdk.types.Function('customOnError'),
 )
 
 view_state = pdk.ViewState(latitude=0, longitude=0, zoom=1)

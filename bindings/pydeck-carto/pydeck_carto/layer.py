@@ -7,6 +7,7 @@ LIBRARIES_TO_INCLUDE = [
     f"npm/h3-js@{H3_VERSION}/dist/h3-js.umd.js",
     f"npm/@deck.gl/extensions@{PYDECK_VERSION}/dist.min.js",
     f"npm/@deck.gl/carto@{PYDECK_VERSION}/dist.min.js",
+    f"npm/notyf@3/notyf.min.js",
 ]
 SELECTED_LIBRARIES = ",".join(LIBRARIES_TO_INCLUDE)
 CARTO_LAYER_BUNDLE_URL = f"https://cdn.jsdelivr.net/combine/{SELECTED_LIBRARIES}"
